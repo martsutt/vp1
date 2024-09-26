@@ -1,0 +1,26 @@
+{
+  "name": "vp1",
+  "version": "1.0.0",
+  "description": "Veebiprogrammeerimise kursuse express.js projekt",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://martsutt@github.com/martsutt/vp1.git"
+  },
+  "keywords": [
+    "veebiprogrammeerimine",
+    "if24"
+  ],
+  "author": "Martin Sütt",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/martsutt/vp1/issues"
+  },
+  "homepage": "https://github.com/martsutt/vp1#readme",
+  "dependencies": {
+    "express": "~4.16.1"
+  }
+}
