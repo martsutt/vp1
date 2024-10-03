@@ -1,6 +1,7 @@
 const monthNamesEt = ["jaanuar", "veebruar","märts","aprill","mai","juuni","juuli","august","september","oktoober","november","detsember"];
 const weekdayNamesEt = ["pühapäev", "esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev"]
 
+
 const dateEt = function(){
     let timeNow = new Date();    
     let weekdayNow = timeNow.getDay();    
@@ -10,10 +11,16 @@ const dateEt = function(){
     return  weekdayNamesEt[weekdayNow] + " " + dateNow + ". " + monthNamesEt[monthNow] + " " + yearNow;
 }
 const kell = function(){
+    function addZero(i) {
+        if(i<10) {
+            i="0" + i;
+        }
+        return i;
+    }
     let timeNow = new Date();
-    let hourNow = timeNow.getHours();
-    let minuteNow = timeNow.getMinutes();
-    let secondNow = timeNow.getSeconds();
+    let hourNow = addZero(timeNow.getHours());
+    let minuteNow = addZero(timeNow.getMinutes());
+    let secondNow = addZero(timeNow.getSeconds());
     return hourNow + ":" + minuteNow + ":" + secondNow;
 
 }

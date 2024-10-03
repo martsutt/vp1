@@ -13,10 +13,11 @@
     <li><a href="/">Avaleht</a></li>
 </ul>
 <hr>
-<h2>Praegune ajahetk</h2>
+<h2><% h2 %></h2>
 <ul>
-    <li>Kuupäev: <%= nowD %></li>
-    <li>Kellaaeg: <%= nowT %></li>
+  <% listData.forEach (function(item) { %>
+  <li><%= item %></li>
+  <% }); %>
 </ul>
 
 </body>

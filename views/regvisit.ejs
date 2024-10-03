@@ -13,10 +13,16 @@
     <li><a href="/">Avaleht</a></li>
 </ul>
 <hr>
-<h2>Praegune ajahetk</h2>
+<h2>Pane oma nimi kirja</h2>
+<form method="POST">
+  <label for="firstNameInput">Eesnimi: </label>
+  <input type="text" id="firstNameInput" name="firstNameInput" placeholder="Eesnimi...">
+  <br>
+  <label for="lastNameInput">Perekonnanimi: </label>
+  <input type="text" id="lastNameInput" name="lastNameInput" placeholder="Perekonnanimi...">
+  <input type="submit" id="regSubmit" name="regSubmit" value="Salvesta">
+</form>
 <ul>
-    <li>Kuupäev: <%= nowD %></li>
-    <li>Kellaaeg: <%= nowT %></li>
 </ul>
 
 </body>
