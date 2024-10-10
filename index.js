@@ -34,6 +34,19 @@ app.get("/vanasonad", (req,res)=>{
     });
 });
 
+app.get("/visitlog", (req,res)=>{
+    let kulastajaNimekiri = []
+    fs.readFile("public/txt/visitlog.txt", "utf8", (err, data)=>{
+        if(err){
+            res.render("visitlog", {h2: "Külastajate nimekiri", listData: ["Ei leidnud külastajate andmeid"]})
+        }
+        else {
+            kulastajaNimekiri = data.split(";");
+            res.render("visitlog", {h2: "Külastajate nimekiri", listData: kulastajaNimekiri});
+        }
+    });
+});
+
 app.get("/regvisit", (req,res)=>{
     res.render("regvisit");
 });
@@ -45,7 +58,10 @@ app.post("/regvisit", (req,res)=>{
             throw err;
         }
         else {
-            fs.appendFile("public/txt/visitlog.txt", req.body.firstNameInput + " " + req.body.lastNameInput + ";", (err)=>{
+            fs.appendFile("public/txt/visitlog.txt",
+                "Nimi: " + req.body.firstNameInput + " " + req.body.lastNameInput + ";" + 
+                "Aeg: " + dtEt.dateEt() + " " + dtEt.kell() + ";" , 
+                (err)=>{
                 if(err){
                     throw err;
                 }
