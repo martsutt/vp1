@@ -1,6 +1,8 @@
 const express = require("express");
 const dtEt = require("./dateTime");
 const fs = require("fs");
+const dbInfo = require("../../vp2024config");
+const mysql = require("mysql2");
 //päringu lahtiharutamiseks POST päringute puhul
 const bodyparser = require("body-parser");
 
@@ -9,6 +11,14 @@ app.set("view engine", "ejs");
 app.use(express.static("public"));
 //päringu URL-i parsimine, false, kui ainult tekst, true, kui muud ka
 app.use(bodyparser.urlencoded({extended: false}));
+
+//loon andmebaasi ühenduse  / sõna conn sõnast connection
+const conn = mysql.createConnection({
+    host: dbInfo.configData.host,
+    user: dbInfo.configData.user,
+    password: dbInfo.configData.passWord,
+    database: dbInfo.configData.dataBase
+});
 
 app.get("/", (req,res)=>{
     res.render("index.ejs");
@@ -73,5 +83,57 @@ app.post("/regvisit", (req,res)=>{
             };
         });
     });
+
+app.get("/regvisitdb", (req,res)=>{
+    let notice = "";
+    let firstName = "";
+    let lastName = "";
+    res.render("regvisitdb", {notice: notice, firstName: firstName, lastName: lastName}
+    );
+});
+
+app.post("/regvisitdb", (req,res)=>{
+    let notice = "";
+    let firstName = "";
+    let lastName = "";
+    if(!req.body.firstNameInput || !req.body.lastNameInput){
+        firstName = req.body.firstNameInput;
+        lastName = req.body.lastNameInput;
+        notice = "Osa andmeid sisestamata";
+        res.render("regvisitdb", {notice: notice, firstName: firstName, lastName: lastName});
+    }
+    else{
+        let sqlreq = "INSERT INTO visitlog (first_name, last_name) VALUES (?,?)";
+        conn.query(sqlreq, [req.body.firstNameInput, req.body.lastNameInput], (err,sqlres)=>{
+            if(err){
+                throw err;
+            }
+            else{
+                notice = "Külastus registreeritud!";
+                res.render("regvisitdb", {notice: notice, firstName: firstName, lastName: lastName});
+            }
+        });
+    }
+});
+
+app.get("/eestifilm", (req,res)=>{
+        res.render("filmindex");
+});
+
+app.get("/eestifilm/tegelased", (req,res)=>{
+    let sqlReq = "SELECT first_name, last_name, birth_date FROM person";
+    let persons = [];
+    conn.query(sqlReq, (err, sqlres)=>{
+        if(err){
+            throw err;
+        }
+        else{
+            console.log(sqlres);
+            persons = sqlres;
+            res.render("tegelased", {persons: persons});
+        }
+    });
+    //res.render("tegelased");
+});
 
 app.listen(5134);
