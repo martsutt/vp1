@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+  <meta charset="utf-8">
+  <title>Martin Sütt</title>
+</head>
+<body>
+  <img src="/banner/vp_banner_2024.png" alt="Veebiprogrammeerimise 2024 aasta kursuse bänner">
+  <h1>Martin Sütt</h1>
+  <p>See leht on loodud õppetöö raames <a href="https://www.tlu.ee" target="blank">Tallinna Ülikoolis</a> ja ei sisalda tõsiseltvõetavat sisu.</p>
+<hr>
+<ul>
+    <li><a href="/">Avaleht</a></li>
+    <li><a href="/eestifilm">Eesti filmi avalehele</a></li>
+</ul>
+<hr>
+<p><strong><%= notice %></strong></p>
+<h2>Filmitegelane</h2>
+<form action="/add_person" method="post">
+    <label for="firstName">Eesnimi:</label><br>
+    <input type="text" id="firstName" name="first_name"><br>
+    <label for="lastName">Perekonnanimi:</label><br>
+    <input type="text" id="lastName" name="last_name"><br>
+    <label for="birthDate">Sünnikuupäev:</label><br>
+    <input type="date" id="birthDate" name="birth_date"><br>
+    <input type="submit" name="personSubmit" value="Lisa tegelane">
+</form>
+<br>
+
+<hr>
+
+<h2>Film</h2>
+<form action="/add_movie" method="post">
+    <label for="title">Pealkiri:</label><br>
+    <input type="text" id="title" name="title"><br>
+    <label for="productionYear">Tootmisaasta:</label><br>
+    <input type="number" id="productionYear" name="production_year"><br>
+    <label for="duration">Kestus minutites:</label><br>
+    <input type="number" id="duration" name="duration"><br>
+    <label for="description">Kirjeldus:</label><br>
+    <input type="text" id="description" name="description"><br>
+    <input type="submit" name="filmSubmit" value="Lisa film"><br>
+</form>
+<br>
+
+<hr>
+
+<h2>Filmitegelaste roll filmis</h2>
+<form action="/add_position" method="post">
+    <label for="position">Roll:</label><br>
+    <input type="text" id="positionName" name="position_name"><br>
+    <label for="description">Kirjeldus:</label><br>
+    <input type="text" id="description" name="description"><br>
+    <input type="submit" name="positionSubmit" value="Lisa roll">
+</form>
+<br>
+</body>
+</html>
+</body>
+</html>

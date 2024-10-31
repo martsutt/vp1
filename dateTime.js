@@ -1,16 +1,47 @@
 const monthNamesEt = ["jaanuar", "veebruar","märts","aprill","mai","juuni","juuli","august","september","oktoober","november","detsember"];
 const weekdayNamesEt = ["pühapäev", "esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev"]
-
+const semesterStartDate = new Date("2024-09-02");
 
 const dateEt = function(){
-    let timeNow = new Date();    
+    let timeNow = new Date();
+    //let specDate = new Date("12-27-1939");
     let weekdayNow = timeNow.getDay();    
     let dateNow = timeNow.getDate();      
     let monthNow = timeNow.getMonth();
     let yearNow = timeNow.getFullYear();
     return  weekdayNamesEt[weekdayNow] + " " + dateNow + ". " + monthNamesEt[monthNow] + " " + yearNow;
 }
-const kell = function(){
+
+const givendateEt = function (gDate){
+    let specDate = new Date(gDate);
+    let day = specDate.getDate();
+    let month = specDate.getMonth();
+    let year = specDate.getFullYear();
+    return day + ". " + monthNamesEt[month] + " " + year;
+};
+
+function sqlDateEt(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return year + '-' + month + '-' + day;
+}
+
+const daysBetween = function(){
+    let date1 = new Date("09/02/2024");
+    let date2 = new Date();
+    let timeDifference = date2.getTime() - date1.getTime();
+    let daysDifference = Math.round(timeDifference / (1000 * 3600 * 24));
+    if (daysDifference === 0) {
+        return "Täna"; // Today
+    } else if (daysDifference > 0) {
+        return "Möödunud " + daysDifference + " päeva"; // Past days
+    } else {
+        return "Tuleb pärast " + Math.abs(daysDifference) + " päeva"; // Future days
+    }
+};
+
+ const kell = function(){
     function addZero(i) {
         if(i<10) {
             i="0" + i;
@@ -22,8 +53,8 @@ const kell = function(){
     let minuteNow = addZero(timeNow.getMinutes());
     let secondNow = addZero(timeNow.getSeconds());
     return hourNow + ":" + minuteNow + ":" + secondNow;
-
 }
+
 const partofDay = function(){
     let dayPart = "suvaline hetk";
     let timeNow = new Date();
@@ -50,4 +81,4 @@ const partofDay = function(){
     }
     return dayPart;
 }
-module.exports = {monthNamesEt,weekdayNamesEt,dateEt,kell, partofDay};
+module.exports = {monthNamesEt,weekdayNamesEt,dateEt,kell, partofDay, givendateEt, daysBetween, sqlDateEt};

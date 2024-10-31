@@ -8,14 +8,31 @@
   <img src="/banner/vp_banner_2024.png" alt="Veebiprogrammeerimise 2024 aasta kursuse bänner">
   <h1>Martin Sütt</h1>
   <p>See leht on loodud õppetöö raames <a href="https://www.tlu.ee" target="blank">Tallinna Ülikoolis</a> ja ei sisalda tõsiseltvõetavat sisu.</p>
-<hr>
+</p>
+<p> Semestri alguse/lõpuni:</p>
+<p> <%= semestrist %> </p>
+
+<% if (latestNews) { %>
+  <h2>Värskeim uudis</h2>
+  <h3><%= latestNews.news_title %></h3>
+  <p>Lisamise kuupäev: <%= latestNews.news_date %></p>
+  <p>Aegumiskuupäev: <%= expired %></p>
+  <pre>Sisu: <%= latestNews.news_text %></pre>
+<% } else { %>
+    <p>Uudiseid pole :D</p>
+<% } %>
+  <hr>
 <ul>
     <li><a href="/timenow">Ajainfo</a></li>
     <li><a href="/vanasonad">Vanasõnad</a></li>
     <li><a href="/regvisit">Registreeri oma külastus (txt põhine)</a></li>
     <li><a href="/regvisitdb">Registreeri oma külastus</a></li>
     <li><a href="/visitlog">Vaata külastajate nimekirja</a></li>
+    <li><a href="/visitlogdb">Vaata külastajate nimekirja andmebaasis</a></li>
     <li><a href="/eestifilm">Eesti film</a></li>
+    <li><a href="/news">Loe uudiseid</a></li>
+    <li><a href="/addnews">Lisa uudis</a></li>
+    <li><a href="/photoupload">Lae üles galeriipilt</a></li>
 </ul>
 </body>
 </html>

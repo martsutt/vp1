@@ -11,14 +11,10 @@
 <hr>
 <ul>
     <li><a href="/">Avaleht</a></li>
-    <li><a href="/eestifilm">Eesti filmi avalehele</a></li>
 </ul>
 <hr>
-<h2>Eesti filmi tegelased</h2> 
-<ul>
-    <% persons.forEach (function(item) { %>
-    <li><%= item.first_name %> <%= item.last_name %>, sündinud <%= item.birth_date %></li>
-    <% }); %>
-  </ul>
+<h2>Lisa filmitegelane andmebaasi</h2>
+
+<p><%= notice %></p>
 </body>
 </html>
