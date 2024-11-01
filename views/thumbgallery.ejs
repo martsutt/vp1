@@ -18,17 +18,24 @@
     <hr />
     <ul>
       <li><a href="/">Avaleht</a></li>
-      <li><a href="/eestifilm">Eesti filmi avalehele</a></li>
     </ul>
     <hr />
-    <h2>Eesti filmi tegelased</h2>
+    <h2>Pöidlapiltide galerii</h2>
+    <% if (notice) { %>
+    <p><strong><%= notice %></strong></p>
+    <% } %>
     <ul>
-      <% persons.forEach (function(item) { %>
+      <% if (photos.length > 0) { %> <% photos.forEach(photo => { %>
       <li>
-        <%= item.first_name %> <%= item.last_name %>, sündinud <%=
-        item.birth_date %>
+        <img
+          src="/gallery/thumb/<%= photo.file_name %>"
+          alt="<%= photo.alt_text %>"
+        />
+        <p><%= photo.orig_name %></p>
       </li>
-      <% }); %>
+      <% }); %> <% } else { %>
+      <li>Pöidlapiltide galerii on tühi</li>
+      <% } %>
     </ul>
   </body>
 </html>
