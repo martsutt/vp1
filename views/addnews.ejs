@@ -1,33 +1,60 @@
 <!DOCTYPE html>
 <html lang="et">
-<head>
-  <meta charset="utf-8">
-  <title>Martin Sütt</title>
-</head>
-<body>
-  <img src="/banner/vp_banner_2024.png" alt="Veebiprogrammeerimise 2024 aasta kursuse bänner">
-  <h1>Martin Sütt</h1>
-  <p>See leht on loodud õppetöö raames <a href="https://www.tlu.ee" target="blank">Tallinna Ülikoolis</a> ja ei sisalda tõsiseltvõetavat sisu.</p>
-<hr>
-<ul>
-    <li><a href="/">Avaleht</a></li>
-</ul>
-<hr>
-<h2>Lisa uudis</h2>
-<form method="POST">
-  <label for="title">Uudise pealkiri: </label>
-  <input type="text" id="titleInput" name="title" placeholder="Uudise pealkiri...">
-  <br>
-  <label for="newsInput">Uudise sisu: </label>
-  <textarea id="newsInput" name="newsInput" placeholder="Uudise sisu..." cols="100" rows="5"></textarea>
-  <br>
-  <label for="expireInput">Uudise aegumiskuupäev: </label>
-  <input type="date" id="expireInput" name="expireInput" value="<%= expired %>">
-  <br>
-  <input type="submit" id="newsSubmit" name="newsSubmit" value="Salvesta">
-</form>
-<ul>
-</ul>
-<p><%= notice %></p>
-</body>
+  <head>
+    <style>
+      body {
+        background-color: rgb(255, 180, 95);
+      }
+    </style>
+    <meta charset="utf-8" />
+    <title>Martin Sütt</title>
+  </head>
+  <body>
+    <img
+      src="/banner/vp_banner_2024.png"
+      alt="Veebiprogrammeerimise 2024 aasta kursuse bänner"
+    />
+    <h1>Martin Sütt</h1>
+    <p>
+      See leht on loodud õppetöö raames
+      <a href="https://www.tlu.ee" target="blank">Tallinna Ülikoolis</a> ja ei
+      sisalda tõsiseltvõetavat sisu.
+    </p>
+    <hr />
+    <ul>
+      <li><a href="/home">Avaleht</a></li>
+    </ul>
+    <hr />
+    <h2>Lisa uudis</h2>
+    <form method="POST">
+      <label for="title">Uudise pealkiri: </label>
+      <input
+        type="text"
+        id="titleInput"
+        name="title"
+        placeholder="Uudise pealkiri..."
+      />
+      <br />
+      <label for="newsInput">Uudise sisu: </label>
+      <textarea
+        id="newsInput"
+        name="newsInput"
+        placeholder="Uudise sisu..."
+        cols="100"
+        rows="5"
+      ></textarea>
+      <br />
+      <label for="expireInput">Uudise aegumiskuupäev: </label>
+      <input
+        type="date"
+        id="expireInput"
+        name="expireInput"
+        value="<%= expired %>"
+      />
+      <br />
+      <input type="submit" id="newsSubmit" name="newsSubmit" value="Salvesta" />
+    </form>
+    <ul></ul>
+    <p><%= notice %></p>
+  </body>
 </html>

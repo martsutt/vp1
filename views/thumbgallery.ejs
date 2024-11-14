@@ -1,8 +1,16 @@
 <!DOCTYPE html>
 <html lang="et">
   <head>
+    <style>
+      body {
+        background-color: rgb(255, 180, 95);
+      }
+    </style>
     <meta charset="utf-8" />
     <title>Martin Sütt</title>
+    <link rel="stylesheet" href="/style/gallery.css" />
+    <link rel="stylesheet" href="/style/modal.css" />
+    <script src="/script/gallery.js" defer></script>
   </head>
   <body>
     <img
@@ -20,22 +28,25 @@
       <li><a href="/">Avaleht</a></li>
     </ul>
     <hr />
+    <dialog id="modal" class="modalarea">
+      <span id="modalClose" class="modalClose">&times;</span>
+      <div class="modalhorizontal">
+        <div class="modalvertical">
+          <p id="modalCaption"></p>
+          <img id="modalImage" src="/pics/empty.png" alt="galeriipilt" />
+        </div>
+      </div>
+    </dialog>
     <h2>Pöidlapiltide galerii</h2>
-    <% if (notice) { %>
-    <p><strong><%= notice %></strong></p>
-    <% } %>
-    <ul>
-      <% if (photos.length > 0) { %> <% photos.forEach(photo => { %>
-      <li>
-        <img
-          src="/gallery/thumb/<%= photo.file_name %>"
-          alt="<%= photo.alt_text %>"
-        />
-        <p><%= photo.orig_name %></p>
-      </li>
-      <% }); %> <% } else { %>
-      <li>Pöidlapiltide galerii on tühi</li>
-      <% } %>
-    </ul>
+    <div id="gallery" class="gallery">
+      <% listData.forEach(function(image){ %>
+      <img
+        src="<%= image.href %><%= image.filename %>"
+        alt="<%= image.alt %>"
+        class="thumbs"
+        data-filename="<%= image.fileName %>"
+      />
+      <% }); %>
+    </div>
   </body>
 </html>

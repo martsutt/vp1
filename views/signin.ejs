@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="et">
+<head>
+  <style>
+    body {
+      background-color: rgb(255, 180, 95);
+    }
+  </style>
+  <meta charset="utf-8">
+  <title>Martin Sütt</title>
+</head>
+<body>
+	<img src="/banner/vp_banner_2024.png" alt="Veebiprogrammeerimise 2024 aasta kursuse bänner">
+	<h1>Martin Sütt</h1>
+	<p>See leht on loodud õppetöö raames <a href="https://www.tlu.ee" target="blank">Tallinna Ülikoolis</a> ja ei sisalda tõsiseltvõetavat sisu.</p>
+  </p>
+	<li><a href="/">Avaleht</a></li>
+  </ul>
+  <hr>
+  <p><strong>Logi sisse</strong></p>
+    <form method="POST">
+      <label for="emailInputt">Kasutajatunnus: </label>
+      <input
+        type="text"
+        id="emailInput"
+        name="emailInput"
+        placeholder="Kasutajatunnus"
+      />
+      <label for="passwordInput">Salasõna:</label>
+      <input
+        type="password"
+        id="passwordInput"
+        name="passwordInput"
+        placeholder="Parool"
+      />
+      <br />
+      <input
+        type="submit"
+        id="loginSubmit"
+        name="loginSubmit"
+        value="Logi sisse"
+      />
+      <span><%= locals.notice || "Ootel" %></span>
+    </form>
+    <p> Loo kasutajakonto <a href="/signup">siin</a></p>
+    <hr />
+</body>
+</html>
