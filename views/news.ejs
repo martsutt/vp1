@@ -1,38 +1,35 @@
 <!DOCTYPE html>
 <html lang="et">
   <head>
-    <style>
-      body {
-        background-color: rgb(255, 180, 95);
-      }
-    </style>
     <meta charset="utf-8" />
     <title>Martin Sütt</title>
+    <style>
+      body {
+        background-color: rgb(143, 143, 143);
+        height: 200vh;
+      }
+    </style>
   </head>
   <body>
-    <img src="/banner/vp_banner_2024.png" alt="Veebiprogrammeerimine 2024.aasta banner"></img>
+    <img
+      src="/banner/vp_banner_2024.png"
+      alt="Veebiprogrammeerimise 2024 aasta kursuse bänner"
+    />
     <h1>Martin Sütt</h1>
-    <p>See leht on loodud õppetöö raames <a href="https://www.tlu.ee" target="blank">Tallinna Ülikoolis</a> ja ei sisalda tõsiseltvõetavat sisu.</p>
-    <hr>
+    <p>
+      See leht on loodud õppetöö raames
+      <a href="https://www.tlu.ee" target="blank">Tallinna Ülikoolis</a> ja ei
+      sisalda tõsiseltvõetavat sisu.
+    </p>
+    <hr />
     <ul>
-      <li><a href="/">Ajainfo</a></li>
+      <li><a href="/home">Avaleht</a></li>
     </ul>
-    <hr>
-        <h1>Uudised</h1>
-        <% if (newsList.length === 0) { %>
-            <p>Ei leitud ühtegi uudist.</p>
-        <% } else { %>
-            <ul>
-                <% newsList.forEach(news => { %>
-                    <li>
-                        <h2><%= news.news_title %></h2>
-                        <p>Lisamise kuupäev: <%= news.news_date %></p>
-                        <p>Aegumiskuupäev: <%= news.expiration_date %></p>
-                        <pre>Sisu: <%= news.news_text %></pre>
-                    </li>
-                <% }); %>
-            </ul>
-        <% } %>
-         
-    </body>
-    </html>
+    <hr />
+    <ul>
+      <li><a href="/news/addnews">Uudise lisamine</a></li>
+      <li><a href="/news/read">Uudiste lugemine</a></li>
+    </ul>
+    <hr />
+  </body>
+</html>

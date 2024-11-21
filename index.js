@@ -12,6 +12,7 @@ const sharp = require("sharp");
 const bcrypt = require("bcrypt");
 //sessiooni haldur
 const session = require("express-session");
+const async = require("async");
 
 const app = express();
 app.use(session({ secret: "jänes", saveUninitialized: true, resave: true })); // see jura express session-i pärast. jänes :D
@@ -342,81 +343,59 @@ app.get("/eestifilm/tegelased", (req, res) => {
   });
 });
 
-app.get("/addnews", checkLogin, (req, res) => {
-  let newsTitle = "";
-  let newsText = "";
-  let expired = "";
-  let notice = "";
-  const dateNow = dtEt.dateEt();
-  const timeNow = dtEt.kell();
-  const expDate = new Date();
-  expDate.setDate(expDate.getDate() + 10);
-  const formattedExpDate = dtEt.givendateEt(expDate);
-  res.render("addnews", {
-    nowD: dateNow,
-    nowT: timeNow,
-    expired: formattedExpDate,
-    notice,
-  });
-});
-
-app.post("/addnews", (req, res) => {
-  let newsTitle = req.body.title;
-  let newsText = req.body.newsInput;
-  let expired = req.body.expireInput;
-  let user = 1;
-
-  if (!newsTitle || newsTitle.length < 3) {
-    let notice = "Uudise pealkiri peab olema vähemalt 3 tähemärki!";
-    return res.render("addnews", { newsTitle, newsText, expired, notice });
-  }
-  if (!newsText || newsText.length < 10) {
-    let notice = "Uudise sisu peab olema vähemalt 10 tähemärki!";
-    return res.render("addnews", { newsTitle, newsText, expired, notice });
-  }
-
-  if (!newsTitle || !newsText || !expired) {
-    let notice = "Osa andmeid on sisestamata!";
-    res.render("addnews", { newsTitle, newsText, expired, notice });
-  } else {
-    let sqlreq =
-      "INSERT INTO news (news_title, news_text, expire_date, user_id) VALUES (?, ?, ?, ?)";
-    conn.query(sqlreq, [newsTitle, newsText, expired, user], (err) => {
-      if (err) {
-        throw err;
-      } else {
-        let notice = "Uudis salvestatud!";
-        res.render("addnews", {
-          newsTitle: "",
-          newsText: "",
-          expired: "",
-          notice,
-        });
-      }
-    });
-  }
-});
-
-app.get("/news", (req, res) => {
-  const today = dtEt.dateEt();
-  let newsList = [];
-  let sqlReq =
-    "SELECT news_title, news_text, news_date, expire_date FROM news WHERE expire_date >= 1 ORDER BY id DESC";
-  const formattedDate = dtEt.sqlDateEt();
-  conn.query(sqlReq, [formattedDate], (err, results) => {
+app.get("/eestifilm/lisaSeos", checkLogin, (req, res) => {
+  // võtan kasutusele async mooduli et korraga teha mitu andmebaasipäringut
+  const filmQueries = [
+    function (callback) {
+      let sqlReq1 = "SELECT id, first_name, last_name, birth_date FROM person";
+      conn.execute(sqlReq1, (err, result) => {
+        if (err) {
+          return callback(err);
+        } else {
+          return callback(null, result);
+        }
+      });
+    }, // KOMA KUNA PLAAN ULES LUGEDAK OIK 3 ASJA JARJEST KORRAGA
+    function (callback) {
+      let sqlReq2 = "SELECT id, title, production_year FROM movie";
+      conn.execute(sqlReq2, (err, result) => {
+        if (err) {
+          return callback(err);
+        } else {
+          return callback(null, result);
+        }
+      });
+    },
+    function (callback) {
+      let sqlReq3 = "SELECT id, position_name FROM position";
+      conn.execute(sqlReq3, (err, result) => {
+        if (err) {
+          return callback(err);
+        } else {
+          return callback(null, result);
+        }
+      });
+    },
+  ];
+  // paneme päringud/funktsioonid paralleelselt käima, tulemuseks saame 3 päringu koondi
+  async.parallel(filmQueries, (err, results) => {
     if (err) {
       throw err;
     } else {
-      let newsList = results.map((item) => ({
-        news_title: item.news_title,
-        news_text: item.news_text,
-        news_date: dtEt.givendateEt(item.news_date),
-      }));
-
-      res.render("news", { newsList, today });
+      console.log(results);
+      res.render("addrelations", {
+        personList: results[0],
+        movieList: results[1],
+        positionList: results[2],
+      });
     }
   });
 });
+
+// uudiste osa eraldi
+const newsRouter = require("./routes/newsRoutes");
+app.use("/news", newsRouter);
+// NEED 2 RIDA NÜÜD ASENDAVAD KOGU UUDISTE COMMENTITUD OSA
 
 app.get("/eestifilm/filmiandmetelisamine", (req, res) => {
   let notice = "";
