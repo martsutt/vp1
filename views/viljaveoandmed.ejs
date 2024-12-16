@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Viljaveo andmed</title>
+  </head>
+  <body>
+    <hr />
+    <ul>
+      <li><a href="/">Viljaveo avaleht</a></li>
+    </ul>
+    <hr />
+    <p><strong><%= notice %></strong></p>
+    <p><h1>Sisesta viljaveo kohta andmeid</h1></p>
+<form action="/viljaveoandmed" method="post">
+    <label for="truck">Auto registrinumber</label><br>
+    <input type="text" id="truck" name="truck" value="<%=truck%>"><br>
+    <label for="weight_in">Auto sisenemismass</label><br>
+    <input type="text" id="weight_in" name="weight_in" value="<%=weight_in%>"><br>
+    <label for="weight_out">Auto väljumismass</label><br>
+    <input type="text" id="weight_out" name="weight_out" value="<%=weight_out%>"><br>
+    <input type="submit" name="truckSubmit" value="Lisa viljaveo auto andmed">
+</form>
+<br>
+<hr>
+  </body>
+</html>

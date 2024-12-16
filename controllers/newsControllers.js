@@ -7,9 +7,8 @@ const conn = mysql.createConnection({
   password: dbInfo.configData.passWord,
   database: dbInfo.configData.dataBase,
 });
-//#desc home page for news section
-//#route GET /news
-//#access_private
+
+const async = require("async");
 
 const newsHome = (req, res) => {
   console.log("Töötab uudiste router koos controlleriga :D");

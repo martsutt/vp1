@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="et">
+  <head>
+    <meta charset="utf-8" />
+    <title>Viljaveo kokkuvõte</title>
+  </head>
+  <body>
+    <ul>
+      <li><a href="/">Viljaveo avaleht</a></li>
+    </ul>
+    <hr />
+    <p>Viljaveo kokkuvõte</p>
+    <ol>
+      <% trucks.forEach (function(item) { %>
+      <br><li>
+        registrinumber: <%= item.truck %> <br>
+        sisenemismass: <%= item.weight_in %></li>
+        väljumismass: <%= item.weight_out %></li><br>
+        viljamass: <%= item.viljamass %></li><br>
+      <% }); %>
+    </ol>
+    <br>
+  </body>
+</html>

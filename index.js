@@ -12,7 +12,6 @@ const sharp = require("sharp");
 const bcrypt = require("bcrypt");
 //sessiooni haldur
 const session = require("express-session");
-const async = require("async");
 
 const app = express();
 app.use(session({ secret: "jänes", saveUninitialized: true, resave: true })); // see jura express session-i pärast. jänes :D
@@ -318,101 +317,24 @@ app.post("/regvisitdb", (req, res) => {
   }
 });
 
-app.get("/eestifilm", checkLogin, (req, res) => {
-  res.render("filmindex");
-});
-
-app.get("/eestifilm/tegelased", (req, res) => {
-  //persons = sqlres; selle asemel tee hoopis nii: , for   i algab 0 piiriks sqlres.length , tsükli sees lisame persons listile uue elemendi, mis on ise "objekt" {first_name: sqlres[i].first_name} , listi lisamiseks on käsk push.persons(lisatav element);
-  let sqlReq = "SELECT first_name, last_name, birth_date FROM person";
-  let persons = [];
-  conn.query(sqlReq, (err, sqlres) => {
-    if (err) {
-      throw err;
-    } else {
-      console.log(sqlres);
-      for (let i = 0; i < sqlres.length; i++) {
-        persons.push({
-          first_name: sqlres[i].first_name,
-          last_name: sqlres[i].last_name,
-          birth_date: dtEt.givendateEt(sqlres[i].birth_date),
-        });
-      }
-      res.render("tegelased", { persons: persons });
-    }
-  });
-});
-
-app.get("/eestifilm/lisaSeos", checkLogin, (req, res) => {
-  // võtan kasutusele async mooduli et korraga teha mitu andmebaasipäringut
-  const filmQueries = [
-    function (callback) {
-      let sqlReq1 = "SELECT id, first_name, last_name, birth_date FROM person";
-      conn.execute(sqlReq1, (err, result) => {
-        if (err) {
-          return callback(err);
-        } else {
-          return callback(null, result);
-        }
-      });
-    }, // KOMA KUNA PLAAN ULES LUGEDAK OIK 3 ASJA JARJEST KORRAGA
-    function (callback) {
-      let sqlReq2 = "SELECT id, title, production_year FROM movie";
-      conn.execute(sqlReq2, (err, result) => {
-        if (err) {
-          return callback(err);
-        } else {
-          return callback(null, result);
-        }
-      });
-    },
-    function (callback) {
-      let sqlReq3 = "SELECT id, position_name FROM position";
-      conn.execute(sqlReq3, (err, result) => {
-        if (err) {
-          return callback(err);
-        } else {
-          return callback(null, result);
-        }
-      });
-    },
-  ];
-  // paneme päringud/funktsioonid paralleelselt käima, tulemuseks saame 3 päringu koondi
-  async.parallel(filmQueries, (err, results) => {
-    if (err) {
-      throw err;
-    } else {
-      console.log(results);
-      res.render("addrelations", {
-        personList: results[0],
-        movieList: results[1],
-        positionList: results[2],
-      });
-    }
-  });
-});
-
 // uudiste osa eraldi
 const newsRouter = require("./routes/newsRoutes");
 app.use("/news", newsRouter);
 // NEED 2 RIDA NÜÜD ASENDAVAD KOGU UUDISTE COMMENTITUD OSA
+//eesti filmi osa eraldi marsruutide failiga
+const eestifilmRouter = require("./routes/eestifilmRoutes");
+app.use("/eestifilm", eestifilmRouter);
+const photoupRouter = require("./routes/photouploadRoutes");
+app.use("/photoupload", photoupRouter);
+const galleryRouter = require("./routes/galleryRoutes");
+app.use("/thumbgallery", galleryRouter);
+//eesti filmi osa eraldi marsruutide failiga
+const signinRouter = require("./routes/signinRoutes");
+app.use("/signin", signinRouter);
 
 app.get("/eestifilm/filmiandmetelisamine", (req, res) => {
   let notice = "";
   res.render("filmiandmetelisamine", { notice });
-});
-
-app.get("/add_person", (req, res) => {
-  let notice = "";
-  let firstName = "";
-  let lastName = "";
-  let birthDate = "";
-  res.render("filmiandmetelisamine", {
-    notice,
-    firstName,
-    lastName,
-    birthDate,
-  });
 });
 
 app.get("/add_movie", (req, res) => {
@@ -535,171 +457,6 @@ app.post("/add_movie", (req, res) => {
         }
       }
     );
-  }
-});
-
-app.get("/photoupload", checkLogin, (req, res) => {
-  let notice = "";
-  res.render("photoupload", { notice: notice });
-});
-
-app.post("/photoupload", upload.single("photoInput"), (req, res) => {
-  //ehk photo input ist tulnud info suunatakse multerile ja multer teab kuhu seda panna
-  let notice = "";
-  if (!req.file) {
-    notice = "Palun vali pilt";
-    console.log(notice);
-    return res.render("photoupload", { notice: notice });
-  }
-  const validMimeTypes = ["image/jpeg"]; //"image/png", "image/gif"
-
-  if (!validMimeTypes.includes(req.file.mimetype)) {
-    notice = "Palun vali pilt ( ainult .jpg failid )";
-    console.log(notice);
-    return res.render("photoupload", { notice: notice });
-  }
-  console.log(req.body);
-  // sellega sai   photoInput: 'T1_ratas.jpg', altInput: 't1 ratas', privacyInput: '1', photoSubmit: 'Lae pilt üles' konsooli kui pildi submit isid
-  console.log(req.file);
-  //failiinfo konsooli saamiseks
-  const fileName = "vp_" + Date.now() + ".jpg";
-  //genereerime oma faili nime ( teeme natuke halvasti kuna jatame ainult jpg) me teeme vp_ ajatempel + .jpg
-  fs.rename(req.file.path, req.file.destination + fileName, (err) => {
-    if (err) {
-      console.log(err);
-      return res.render("photoupload", {
-        notice: "Pildi üleslaadimisel tekkis viga.",
-      });
-    }
-  });
-  //nimeta üleslaetud faili ümber just meie tehtud fileNamega
-  //console.log("jpg faili uus nimi on: ", fileName)   //siin testisin niisama kuidas konsoolis valjastada failinime peale muutmist
-  sharp(req.file.destination + fileName)
-    .resize(800, 600)
-    .jpeg({ quality: 90 })
-    .toFile("./public/gallery/normal/" + fileName, (err) => {
-      if (err) {
-        console.log(err);
-        return res.render("photoupload", {
-          notice: "Pildi töötlemisel tekkis viga.",
-        });
-      }
-    });
-  //node js image manipulation google naiteks et meil on vaja uut moodulit et teha eri suurustes ja formaatides pilte (aint jpg still) kasutame moodulit sharp
-  //praegu loigatakse pildiservad ara, tulevikus vaattame kuidas teise lõikeid teha nagu crop
-  //pakkimise kvaliteedi 1-100 ranges 90 peale ja suunasime talle koha kuhu panna ja liita fileName mis enne tegime
-  sharp(req.file.destination + fileName)
-    .resize(100, 100)
-    .jpeg({ quality: 90 })
-    .toFile("./public/gallery/thumb/" + fileName, (err) => {
-      if (err) {
-        console.log(err);
-        return res.render("photoupload", {
-          notice: "Pildi töötlemisel tekkis viga.",
-        });
-      }
-    });
-  //sama thumbnail i omaga
-  let sqlreq =
-    "INSERT INTO photos (file_name, orig_name, alt_text, privacy, user_id) VALUES (?, ?, ?, ?, ?)"; //salvestame andmebaasi nüüd
-  const userId = 1;
-  conn.query(
-    sqlreq,
-    [
-      fileName,
-      req.file.originalName,
-      req.body.altInput,
-      req.body.privacyInput,
-      userId,
-    ],
-    (err, result) => {
-      if (err) {
-        throw err;
-      } else {
-        notice = "Pilt edukalt üles laetud";
-        console.log("Pilt üles laetud andmebaasi");
-        res.render("photoupload", { notice: notice });
-      }
-    }
-  );
-  //res.render("photoupload");
-});
-
-app.get("/thumbgallery", (req, res) => {
-  let sqlReq =
-    "SELECT file_name, alt_text FROM photos WHERE privacy = ? AND deleted IS NULL ORDER BY id DESC";
-  const privacy = 3;
-  let photoList = [];
-  conn.query(sqlReq, [privacy], (err, result) => {
-    if (err) {
-      throw err;
-    } else {
-      console.log(result);
-      for (let i = 0; i < result.length; i++) {
-        photoList.push({
-          href: "/gallery/thumb/" + result[i].file_name,
-          alt: result[i].alt_text,
-          fileName: result[i].file_name,
-        });
-      }
-      res.render("thumbgallery", { listData: photoList });
-    }
-  });
-  //res.render("gallery");
-});
-
-app.get("/signin", (req, res) => {
-  res.render("signin");
-});
-app.post("/signin", (req, res) => {
-  let notice = "";
-  if (!req.body.emailInput || !req.body.passwordInput) {
-    console.log("andmeid puudu");
-    notice = "sisselogimise andmeid on puudu";
-    //const semestrist = dtEt.semester("9-2-2024");
-    res.render("signin", { notice: notice });
-  } else {
-    let sqlReq = "SELECT id, password FROM users WHERE email = ?";
-    conn.execute(sqlReq, [req.body.emailInput], (err, result) => {
-      if (err) {
-        console.log("viga andmebaasist lugemisel");
-        notice = "tehniline viga, ei logitud sisse :(";
-        res.render("signin", { notice: notice });
-      } else {
-        if (result[0] != null) {
-          //juhul kui kasutaja on olemas ->
-          //kontrollime sisestatud parooli ->
-          bcrypt.compare(
-            req.body.passwordInput,
-            result[0].password,
-            (err, compareResult) => {
-              if (err) {
-                notice = "tehniline viga, ei logitud sisse :(";
-                res.render("signin", { notice: notice });
-              } else {
-                //kas võrdlemisel õige või vale parool?? ->
-                if (compareResult) {
-                  //notice = "Oled sisse loginud";
-                  console.log(
-                    "Kasutaja " + req.body.emailInput + " on sisse logitud"
-                  );
-                  //res.render("signin", { notice });
-                  req.session.userId = result[0].id;
-                  res.redirect("/home");
-                } else {
-                  notice = "kasutajatunnus ja/või parool on vale";
-                  res.render("signin", { notice });
-                }
-              }
-            }
-          );
-        } else {
-          console.log("kasutajat ei ole olemas");
-          notice = "kasutajatunnus ja/või parool on vale";
-          res.render("signin", { notice });
-        }
-      }
-    }); //conn.execute...lõppeb
   }
 });
 
